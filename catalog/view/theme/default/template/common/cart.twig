@@ -1,0 +1,78 @@
+<div id="cart" class="btn-group">
+  <button type="button" data-toggle="dropdown" data-loading-text="{{ text_loading }}"
+    class="btn btn-lg dropdown-toggle connect_btn cust_btn">
+    <span id="cart-total">
+      {% if logged %} {{ text_my_account }} {% else %} {{ text_connect }} {% endif %} <i class="fa fa-user"></i>
+      <!-- {{ text_items }} -->
+    </span></button>
+  <ul class="dropdown-menu pull-right account_list">
+    {% if not logged %}
+    <li class="hlt_login">
+      <a href="{{ login_url }}" title="{{ text_login }}">{{ text_login }}</a>
+      <!-- <p class="text-center">{{ text_empty }}</p> -->
+    </li>
+    {% endif %}
+    {% if not logged %}
+    <li>
+      {% else %}
+    <li class="hlt_login">
+      {% endif %}
+      <a href="{{ my_account_url }}" title="{{ text_my_account }}">{{ text_my_account }}</a>
+    </li>
+    <li>
+      <a href="{{ cart_url }}" title="{{ text_my_cart }}">{{ text_my_cart }}</a>
+    </li>
+    <li>
+      <a href="#" title="{{ text_customer_service }}">{{ text_customer_service }}</a>
+    </li>
+    {% if logged %}
+    <li>
+      <a href="{{ logout }}" title="{{ text_logout }}">{{ text_logout }}</a>
+    </li>
+    {% endif %}
+  </ul>
+</div>
+
+<div id="cart-tab" class="btn-group">
+  <button type="button" data-toggle="dropdown" data-loading-text="{{ text_loading }}"
+    class="btn btn-lg dropdown-toggle connect_btn cust_btn">
+    <span id="cart-total">
+      <span class="pro_qnty">0</span> {{ text_product }} &nbsp; <i class="fa fa-shopping-cart"></i>
+    </span>
+  </button>
+</div>
+
+<div class="dropdown-menu cart-dropdown-menu" aria-labelledby="cart-tab">
+  <div class="cart-header">
+    <strong>MY CART - </strong><a href="" class="qkord"><small>QUICK ORDER</small></a>
+  </div>
+  <div class="cart-content">
+    <div class="col-md-9">
+      {% if not products %}
+        <div class="col-md-5">
+          <p>You don't have anything in your cart.</p>
+        </div>
+        <div class="col-md-7">
+          <button class="btn continue-shopping">CONTINUE SHOPPING</button>
+        </div>
+      {% else %}  
+
+      {% endif %}
+      
+    </div>
+    <div class="col-md-3">
+      {% if not products %}
+      
+      {% else %}  
+
+      {% endif %}
+    </div>
+    
+    
+  </div>
+  <!-- <div class="cart-footer">
+    <div class="subtotal">Subtotal: <strong>CAD $0.00</strong></div>
+    <button class="btn modify-cart">MODIFY CART</button>
+    <button class="btn place-order">PLACE ORDER <i class="fa fa-shopping-cart"></i></button>
+  </div> -->
+</div>

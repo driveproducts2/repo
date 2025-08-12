@@ -1,0 +1,133 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-customer" data-toggle="tooltip" title="{{ button_save }}"
+          class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i
+            class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid"> {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_form }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-customer"
+          class="form-horizontal">
+          <input type="hidden" name="customer_id" value="{{customer_id}}">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label for="customer">Customer name</label>
+              <select name="customer" id="customer" class="form-control" disabled>
+                <option value="">{{ customer_name }}</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label for="title">Title</label>
+              <select name="title" id="title" class="form-control">
+                <option value="">Select title</option>
+                <option value="Dr." {% if title=='Dr.' %}selected="selected" {% endif %}>Dr.</option>
+                <option value="Mr." {% if title=='Mr.' %}selected="selected" {% endif %}>Mr.</option>
+                <option value="Mrs." {% if title=='Mrs.' %}selected="selected" {% endif %}>Mrs.</option>
+                <option value="Ms." {% if title=='Ms.' %}selected="selected" {% endif %}>Ms.</option>
+              </select>
+            </div>
+            <div class="col-md-3 pl-0">
+              <label for="first_name">First Name <span class="error">*</span></label>
+              <input type="text" name="first_name" value="{{ first_name }}" id="first_name" class="form-control">
+              {% if error_first_name %}
+                <div class="text-danger">{{ error_first_name }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-3 pl-0">
+              <label for="last_name">Last Name <span class="error">*</span></label>
+              <input type="text" name="last_name" value="{{ lastname }}" id="last_name" class="form-control">
+              {% if error_last_name %}
+                <div class="text-danger">{{ error_last_name }}</div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label for="email">Email <span class="error">*</span></label>
+              <input type="email" name="email" id="email" value="{{ email }}" class="form-control">
+              {% if error_user_email %}
+                <div class="text-danger">{{ error_user_email }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label for="username">Username</label>
+              <input type="text" name="username" id="username" value="{{ username }}" class="form-control">
+            </div>
+            <div class="col-md-2">
+              <label for="access_type">User group <span class="error">*</span></label>
+              <select name="access_type" id="access_type" class="form-control">
+                <option value="">Select group</option>
+                {% for group in user_group %}
+                <option value="{{ group.user_group_id }}" {% if group.user_group_id==access_type %}selected="selected"
+                  {% endif %}>{{ group.name }}</option>
+                {% endfor %}
+              </select>
+              {% if error_access_type %}
+                <div class="text-danger">{{ error_access_type }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-2">
+              <label for="status">Status <span class="error">*</span></label>
+              <select name="status" id="status" class="form-control">
+                <option value="">Select status</option>
+                <option value="1" {% if status=='1' %}selected="selected" {% endif %}>Enable</option>
+                <option value="0" {% if status=='0' %}selected="selected" {% endif %}>Disable</option>
+              </select>
+              {% if error_status %}
+                <div class="text-danger">{{ error_status }}</div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label for="telephone">Phone <span class="error">*</span></label>
+              <input type="text" name="telephone" id="telephone" value="{{ telephone }}" class="form-control">
+              {% if error_telephone %}
+                <div class="text-danger">{{ error_telephone }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-1 pl-0">
+              <label for="ext">Ext <span class="error">*</span></label>
+              <input type="text" name="ext" id="ext" value="{{ ext }}" class="form-control">
+              {% if error_ext %}
+                <div class="text-danger">{{ error_ext }}</div>
+              {% endif %}
+            </div>
+            <div class="col-md-4">
+              <label for="telephone1">Residential phone</label>
+              <input type="text" name="telephone1" id="telephone1" value="{{ telephone_1 }}" class="form-control">
+            </div>
+            <div class="col-md-4">
+              <label for="telephone2">Cellular phone</label>
+              <input type="text" name="telephone2" id="telephone2" value="{{ telephone_2 }}" class="form-control">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3"><button class="btn btn-primary">Create a new password</button></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}

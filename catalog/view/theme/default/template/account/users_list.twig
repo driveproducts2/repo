@@ -1,0 +1,68 @@
+{{ header }}
+
+<div id="account-address" class="container">
+  <h1 class="regt_head">My Users</h1>
+  {% if success %}
+  <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}</div>
+  {% endif %}
+  {% if error_warning %}
+  <div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
+  {% endif %}
+  <div class="">
+    <div class="prof-tab mb-5">
+      <a href="">My Profile</a>
+      <a href="">My Addresses</a>
+      <a href="" class="active">My Users</a>
+    </div>
+    <div id="content" class="{{ class }}">
+      <h3 class="white-lbl">User Search</h3>
+      <hr>
+
+      <!-- Search parameters -->
+      <div class="user-search-div">
+        <form id="user_srch_form">
+          <div class="row">
+            <div class="form-group col-md-4">
+              <label for="username" class="form-label">User Name</label>
+              <input type="text" class="form-control" id="username">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="status" class="form-label">Status</label>
+              <select name="" id="status" class="form-control">
+                <option value="all">All</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="form-group col-md-4">
+              <input type="checkbox" name="" id="access_type">
+              <label for="access_type" class="form-label">Include Contacts</label>
+            </div>
+          </div>
+          <div class="form-group btn-div">
+            <button id="search_btn" class="btn btn-primary">Search</button>
+            <input type="hidden" name="" id="customer_user_id" value="{{ customer_id }}">
+          </div>
+        </form>
+      </div>
+
+      <!-- Search table results -->
+      <h3 class="white-lbl">List of users</h3>
+      <div class="row">
+        <div class="col-md-6 white-lbl res-elmnt"><span id="no_records"></span> Result(s)</div>
+        <div class="col-md-6 pag_user">
+          <span class="white-lbl res-elmnt">Results Per Page</span>
+          <select name="" id="res_per_page" class="pag_dd">
+            <option value="12">12</option>
+            <option value="24">24</option>
+            <option value="48">48</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-srch-div"></div>
+
+    </div>
+  </div>
+</div>
+{{ footer }}

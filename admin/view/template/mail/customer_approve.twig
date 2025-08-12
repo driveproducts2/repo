@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Modification Notification</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;">
+    <div class="email-container" style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e0e0e0;">
+        <div class="header" style="background-color: #686764; padding: 20px; text-align: center;">
+            <img style="max-width: 150px;" src="{{ logo }}" alt="Drive Products Logo">
+        </div>
+        <div class="content" style="padding: 20px;">
+            <h2 style="font-size: 18px; color: #333333; margin-bottom: 10px;">{{ for }}</h2>
+            <p style="font-size: 14px; color: #666666; line-height: 1.5;">{{ adm_msg }}</p>
+            <div class="credentials" style="background-color: #f7f7f7; padding: 15px; margin: 20px 0;
+ border: 1px dashed #cccccc;">
+                <p>{{ link_lang }}: <a href="{{ login_url }}"><strong>Click here to login</strong></a></p>
+                <p>{{ email_lang }}: <strong>{{ customer_email }}</strong></p>
+                <p>{{ pwd_lang }}: <strong>{{ pswd }}</strong></p>
+            </div>
+            <p>{{ mdf_pwd }}</p>
+            <p style="text-align: right;">{{ cordially }} <br> Drive Products</p>
+        </div>
+        <div class="footer" style="padding: 20px; text-align: center; font-size: 12px; color: #999999;
+ background-color: #f9f9f9; border-top: 1px solid #e0e0e0;">
+            <p>{{ copyright }}</p>
+        </div>
+    </div>
+</body>
+</html>

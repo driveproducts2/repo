@@ -1,0 +1,294 @@
+-------------------------------------- Date : 16-06-2025 ------------------------------------
+
+-- 1) Item type master table
+DROP TABLE IF EXISTS `oc_item_type`
+CREATE TABLE `oc_item_type` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `item_type` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_date` datetime DEFAULT NULL,
+  `updated_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4 
+  COLLATE=utf8mb4_unicode_ci
+
+INSERT INTO oc_item_type (item_type, created_date) VALUES
+('Sales Inventory', NOW()),
+('Discontinued', NOW()),
+('Kit', NOW()),
+('Misc Charges', NOW()),
+('Services', NOW()),
+('Flat Fee', NOW());
+
+-- 2) Price group master table
+DROP TABLE IF EXISTS oc_pricegroup_master;
+CREATE TABLE `oc_pricegroup_master` (
+  `price_group_code` CHAR(50) NOT NULL COMMENT 'Equivalent to PRCGRPID - Unique price group identifier',
+  `description` VARCHAR(255) DEFAULT NULL COMMENT 'Equivalent to DESCEXPR - Description of the price group',
+  `decimal_places_currency` TINYINT DEFAULT 2 COMMENT 'Equivalent to DECPLCUR - Decimal places for currency display',
+  `decimal_places_quantity` TINYINT DEFAULT 0 COMMENT 'Equivalent to DECPLQTY - Decimal places for quantity',
+  `uom_schedule_id` CHAR(50) DEFAULT NULL COMMENT 'Equivalent to UOMSCHDL - Unit of Measure schedule ID',
+  `sync_with_gp` TINYINT DEFAULT 0,
+  `created_date` DATETIME DEFAULT NULL COMMENT 'Record creation timestamp',
+  `updated_date` DATETIME DEFAULT NULL COMMENT 'Record last update timestamp',
+  PRIMARY KEY (`price_group_code`)
+) ENGINE=InnoDB 
+  DEFAULT CHARSET=utf8mb4 
+  COLLATE=utf8mb4_unicode_ci
+  COMMENT='Master table for price group definitions from Dynamics GP';
+
+-- 3) Unit of measurement master table
+DROP TABLE IF EXISTS oc_uom_master;
+CREATE TABLE oc_uom_master (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  schedule_code VARCHAR(50) NOT NULL,                     -- UOMSCHDL (Unit of Measure Schedule ID)
+  schedule_description VARCHAR(150),                      -- UMSCHDSC (Schedule Description)
+  base_unit VARCHAR(50) NOT NULL,                         -- BASEUOFM (Base Unit of Measure)
+  gp_timestamp DATETIME DEFAULT NULL,       -- DEX_ROW_TS (used by Dynamics GP)
+  sync_with_gp TINYINT DEFAULT 0,
+  created_at DATETIME DEFAULT NULL,          -- created_date
+  updated_at DATETIME DEFAULT NULL  -- updated_date
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
+
+-------------------------------------- Date : 17-06-2025 ------------------------------------
+-- Updated sync tracker
+
+DROP TABLE IF EXISTS oc_sync_tracker;
+CREATE TABLE `oc_sync_tracker` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `module_name` VARCHAR(50) NOT NULL,
+  `rows_affected` INT(11) DEFAULT 0,
+  `tbl_max_timestmp` DATETIME DEFAULT NULL,
+  `gp_db_timestmp` DATETIME DEFAULT NULL,
+  `created_at` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
+
+-- UOM schedule table
+DROP TABLE IF EXISTS oc_uom_schedule;
+CREATE TABLE oc_uom_schedule (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uomschdl VARCHAR(70) NOT NULL,              -- Unit of Measure Schedule ID
+    uofm VARCHAR(70) NOT NULL,                  -- Unit of Measure
+    equivuom VARCHAR(70) NOT NULL,              -- Equivalent Unit of Measure
+    equomqty DECIMAL(18, 5) NOT NULL,           -- Equivalent Quantity
+    qtybsuom DECIMAL(18, 5) NOT NULL,           -- Quantity in Base UOM
+    uofmlongdesc VARCHAR(255),                  -- UOM Long Description
+    dex_row_ts DATETIME,                        -- Dexterity Timestamp
+    sync_with_gp TINYINT DEFAULT 0,              -- GP sync flag 
+    created_date DATETIME DEFAULT NULL,         -- Record Creation Date
+    updated_date DATETIME DEFAULT NULL          -- Record Update Date
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
+
+-------------------------------------- DATE : 19-06-2025 --------------------------------
+-- Item class master table
+
+DROP TABLE IF EXISTS oc_item_classes;
+CREATE TABLE `oc_item_classes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_class` varchar(60) NOT NULL,
+  `item_class_desc` varchar(150) DEFAULT NULL,
+  `item_type` varchar(10) DEFAULT NULL,
+  `item_class_genrl_desc` varchar(150) DEFAULT NULL,
+  `item_class_tax_schdl_id` varchar(60) DEFAULT NULL,
+  `decimal_qty` varchar(10) DEFAULT NULL,
+  `uom_schedule` varchar(60) DEFAULT NULL,
+  `price_level` varchar(60) DEFAULT NULL,
+  `price_group` varchar(60) DEFAULT NULL,
+  `sales_tax_option` varchar(10) DEFAULT NULL,
+  `sync_with_gp` TINYINT DEFAULT 0,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `item_class` (`item_class`)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
+
+-------------------------------------------- DATE : 20-06-2025 -----------------------------------------
+-- product and product description table
+
+DROP TABLE IF EXISTS `oc_product`;
+CREATE TABLE `oc_product` (
+  `product_id` int(11) NOT NULL AUTO_INCREMENT,
+  `model` varchar(80) NOT NULL,
+  `name` varchar(200) DEFAULT NULL,
+  `item_class_code` varchar(150) DEFAULT NULL,
+  `item_type` int(11) DEFAULT NULL,
+  `sales_tax_option` varchar(10) DEFAULT NULL,
+  `item_class_tax_schdl_id` varchar(100) DEFAULT NULL,
+  `selling_uom` varchar(60) DEFAULT NULL,
+  `price_level` varchar(150) DEFAULT NULL,                
+  `price_group` varchar(150) DEFAULT NULL,
+  `category_id` int(11) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `price` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `tax_class_id` int(11) NOT NULL DEFAULT '0',
+  `quantity_minimum` int(10) NOT NULL DEFAULT '1',
+  `quantity_multiple` int(10) NOT NULL DEFAULT '1',
+  `quantity_maximum` int(10) NOT NULL DEFAULT '0',
+  `sort_order` int(11) NOT NULL DEFAULT '0',
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  `sync_with_gp` tinyint(1) DEFAULT '0',
+  `gp_timestamp` DATETIME DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`product_id`),
+  UNIQUE KEY `idx_model` (`model`)
+) ENGINE=InnoDB 
+  COLLATE=utf8mb4_unicode_ci
+  CHARSET=utf8mb4
+  
+DROP TABLE IF EXISTS `oc_product_description`;
+CREATE TABLE `oc_product_description` (
+  `product_id` int(11) NOT NULL,
+  `model` varchar(80) NOT NULL,
+  `language_id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `tag` text DEFAULT NULL,
+  `meta_title` varchar(255) DEFAULT NULL,
+  `meta_description` varchar(255) DEFAULT NULL,
+  `meta_keyword` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`product_id`,`language_id`)
+) ENGINE=InnoDB 
+  COLLATE=utf8mb4_unicode_ci
+  CHARSET=utf8mb4;
+
+-------------------------------------------- DATE : 23-06-2025 -----------------------------------------
+-- item to price group mapping table
+CREATE TABLE `oc_pricegroup_to_item` (
+  `price_group_id` char(150) NOT NULL,
+  `item_number` char(150) NOT NULL,
+  `sequence_number` int(11) DEFAULT NULL,
+  `dex_row_id` int(11) DEFAULT NULL,
+  `sync_with_gp` tinyint(4) DEFAULT '0',
+  `created_date` datetime DEFAULT NULL,
+  `updated_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`price_group_id`,`item_number`)
+) ENGINE=InnoDB 
+  COLLATE=utf8mb4_unicode_ci
+  CHARSET=utf8mb4;
+
+-- price sheet master table
+CREATE TABLE `oc_price_sheet_master` (
+  `price_sheet_id` varchar(80) NOT NULL,
+  `description` varchar(150) NOT NULL,
+  `is_ntpr_only` tinyint(4) DEFAULT NULL,
+  `is_active` tinyint(4) DEFAULT NULL,
+  `start_date` datetime DEFAULT NULL,
+  `end_date` datetime DEFAULT NULL,
+  `is_promo` tinyint(4) DEFAULT NULL,
+  `currency_id` varchar(30) NOT NULL,
+  `sync_with_gp` tinyint DEFAULT 0,
+  `added_date` datetime DEFAULT NULL,
+  `updated_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`price_sheet_id`),
+  KEY `indx_price_sheet_cust` (`price_sheet_id`) USING BTREE,
+  KEY `indx_pricesheet_strtdate` (`start_date`),
+  KEY `indx_pricesheet_enddate` (`end_date`)
+) ENGINE=InnoDB COLLATE=utf8mb4_unicode_ci CHARSET=utf8mb4;
+
+-- Date : 02-07-2025
+-- Add column sync_with_gp to keep track of syncing in orders table.
+ALTER TABLE `oc_order`
+ADD COLUMN `sync_with_gp` TINYINT(1) NOT NULL DEFAULT 0
+AFTER `accept_language`;
+
+-- Date : 04-07-2025
+-- Add po number for customer.
+ALTER TABLE `oc_order`
+ADD COLUMN `customer_po_number` VARCHAR(100) NOT NULL DEFAULT 0
+AFTER `shipping_code`;
+
+-- Add shipping address code column in order table
+ALTER TABLE `oc_order`
+ADD COLUMN `shipping_address_code` VARCHAR(50) DEFAULT NULL
+AFTER `shipping_company`;
+
+-- Date : 07-07-2025
+-- Add gp order number.
+ALTER TABLE `oc_order`
+ADD COLUMN `gp_order_no` VARCHAR(255) NOT NULL DEFAULT 0
+AFTER `order_id`;
+
+-- Date : 10-07-2025
+-- Add column show in webstore
+ALTER TABLE `oc_warehouse`
+ADD COLUMN `show_in_webstore` TINYINT(1) NOT NULL DEFAULT 0
+AFTER `status`;
+
+-- Date : 11-07-2025
+-- Add indexes for product quantity related tables
+-- For join on location code
+ALTER TABLE oc_product_to_location ADD INDEX idx_location_item (location_code, item_number);
+
+-- For filtering warehouses
+ALTER TABLE oc_warehouse ADD INDEX idx_show_in_webstore (show_in_webstore);
+
+-- Date : 22-072-2025
+-- Add status for item class master table to show only products having item class status active
+ALTER TABLE `oc_item_classes` ADD `status` TINYINT NOT NULL DEFAULT '1' AFTER `sales_tax_option`;
+
+-- Add index in pricing tables to optimize queries
+ALTER TABLE oc_price_list
+ADD INDEX idx_product_sku (product_sku);
+
+ALTER TABLE oc_customer_price_sheet
+ADD INDEX idx_custgrp (customer_group_id);
+
+-------------------------------------------------------- DATE : 08-08-2025 -----------------------------------------------------------
+-- Make changes sync tracker table
+DROP TABLE IF EXISTS `oc_sync_tracker`;
+CREATE TABLE `oc_sync_tracker` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `module_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `rows_affected` int(11) DEFAULT 0,
+  `tbl_max_timestmp` datetime DEFAULT NULL,
+  `tbl_max_timestmp2` datetime DEFAULT NULL,
+  `gp_db_timestmp` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--ITEM CLASS TABLE
+DROP TABLE IF EXISTS `oc_item_classes`;
+CREATE TABLE `oc_item_classes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_class` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_class_desc` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `item_type` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `item_class_genrl_desc` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `item_class_tax_schdl_id` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `decimal_qty` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `uom_schedule` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `price_level` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `price_group` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sales_tax_option` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sync_with_gp` tinyint(4) DEFAULT 0,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `item_class` (`item_class`)
+) ENGINE=InnoDB AUTO_INCREMENT=709 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--product table changes
+TRUNCATE TABLE oc_product;
+TRUNCATE TABLE oc_product_description;
+ALTER TABLE oc_product
+ADD COLUMN name	varchar(200),
+ADD COLUMN sales_tax_option VARCHAR(10),
+ADD COLUMN item_class_tax_schdl_id VARCHAR(100),
+ADD COLUMN quantity_minimum INT,
+ADD COLUMN quantity_multiple INT,
+ADD COLUMN quantity_maximum INT,
+ADD COLUMN gp_timestamp DATETIME,
+ADD COLUMN created_at DATETIME,
+ADD COLUMN updated_at DATETIME;
+

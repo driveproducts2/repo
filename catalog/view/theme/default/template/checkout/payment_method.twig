@@ -1,0 +1,19 @@
+<div class="row">
+  <div class="col-sm-4">
+    <div class="form-group">
+      <label for="purchase_order">Purchase order number <span style="color: red;">*</span></label>
+      <input type="text" name="purchase_order" id="purchase_order" class="form-control">
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="form-group">
+      <label for="shipping_instruction">Shipping instructions</label>
+      <input type="text" name="shipping_instruction" id="shipping_instruction" class="form-control">
+    </div>
+  </div>
+</div>
+<div class="buttons">
+  <div class="pull-right">
+    <input type="button" value="{{ button_continue }}" id="button-payment-method" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
+  </div>
+</div>

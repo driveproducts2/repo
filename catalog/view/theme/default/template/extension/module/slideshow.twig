@@ -1,0 +1,43 @@
+<!-- <div class="slideshow swiper-viewport">
+  <div id="slideshow{{ module }}" class="swiper-container">
+    <div class="swiper-wrapper"> {% for banner in banners %}
+      <div class="swiper-slide text-center">{% if banner.link %}<a href="{{ banner.link }}"><img src="{{ banner.image }}" alt="{{ banner.title }}" class="img-responsive" /></a>{% else %}<img src="{{ banner.image }}" alt="{{ banner.title }}" class="img-responsive" />{% endif %}</div>
+      {% endfor %} </div>
+  </div>
+  <div class="swiper-pagination slideshow{{ module }}"></div>
+  <div class="swiper-pager">
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
+</div> -->
+<img class="banner_logo" src="{{ logo }}" alt="">
+
+<!-- NEWLY ADDED TO DISPLAY CATEGORIES ON HOME PAGE -->
+<!--<div class="homePageCategories">
+  <div class="row">
+    {% for category in categories %}
+      <div class="col-md-4 col-sm-2 cat_item">
+        <a href="{{ category.href }}" class="homePageCategoryButton" title="{{ category.name }}">
+          <img src="./image/{{ category.image }}" alt="{{ category.name }}">
+          <div>{{ category.name }}</div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>-->
+<!-- NEWLY ADDED TO DISPLAY CATEGORIES ON HOME PAGE -->
+
+<script type="text/javascript"><!--
+$('#slideshow{{ module }}').swiper({
+	mode: 'horizontal',
+	slidesPerView: 1,
+	pagination: '.slideshow{{ module }}',
+	paginationClickable: true,
+	nextButton: '.slideshow .swiper-button-next',
+    prevButton: '.slideshow .swiper-button-prev',
+    spaceBetween: 30,
+	autoplay: 2500,
+    autoplayDisableOnInteraction: true,
+	loop: true
+});
+//--></script>

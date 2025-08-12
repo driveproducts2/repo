@@ -1,0 +1,9 @@
+htaccess
+!system/library/cart/cart.php
+system/
+image/
+vendor/
+composer.json
+composer.lock
+config.php
+admin/config.php

@@ -1,0 +1,117 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <h1>{{ heading_title_item_class }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    {% if success %}
+      <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success_item_class }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+      </div>
+    {% endif %}
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-list"></i> {{ text_item_class_list }}</h3>
+      </div>
+      <div class="panel-body">
+        <div style="display: flex; margin-bottom: 10px; justify-content: space-between;">
+          <div>
+            <p>Tick the checkbox to enable or disable item classes and click on "<b>Save</b>" button</p>
+          </div>
+          <button class="btn btn-primary" id="save-item-classes">Save</button>
+        </div>
+        <div class="row" style="margin-bottom: 10px;">
+          <div class="col-md-2">
+            <input type="text" class="form-control" placeholder="Search item class here" id="search-item-class">
+          </div>
+        </div>
+        {% if item_classes %}
+          <div class="row">
+            {% for item_class in item_classes %}
+                <div class="col-md-2 item-class-block" data-name="{{ item_class.item_class|lower }}">
+                  <input type="checkbox" id="{{ item_class.item_class }}" {% if item_class.status == 1 %} checked {% endif %} class="item_class"> <label for="{{ item_class.item_class }}">{{ item_class.item_class }}</label>
+                </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          No result found !!!!
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+  <div id="overlay-loader" style="display: none;">
+    <div class="loader-spinner"></div>
+  </div>
+  
+</div>
+
+<script>
+  $(document).ready(function () {
+    //search functionality
+    $('#search-item-class').on('keyup', function () {
+      const search = $(this).val().toLowerCase();
+
+      $('.item-class-block').each(function () {
+        const itemName = $(this).data('name');
+        if (itemName.includes(search)) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
+
+    //update status of item classes
+    $('#save-item-classes').on('click', function () {
+      var items = [];
+
+      $('.item-class-block').each(function () {
+        var checkbox = $(this).find('.item_class');
+        var itemClassId = checkbox.attr('id');
+        var status = checkbox.is(':checked') ? 1 : 0;
+
+        items.push({
+          item_class: itemClassId,
+          status: status
+        });
+      });
+
+      // Show loader
+      $('#overlay-loader').show();
+
+      $.ajax({
+        url: '{{ save_url }}',
+        method: 'POST',
+        data: JSON.stringify({ items: items }),
+        contentType: 'application/json',
+        success: function (response) {
+          // Hide loader
+          $('#overlay-loader').hide();
+          
+          if (response.success) {
+            alert('Item class statuses updated successfully!');
+            location.reload(); // optional
+          } else {
+            alert('Failed to update item class statuses.');
+          }
+        },
+        error: function () {
+          alert('An error occurred while saving statuses.');
+        }
+      });
+    });
+
+  });
+</script>
+{{ footer }}

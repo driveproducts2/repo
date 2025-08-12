@@ -1,0 +1,296 @@
+{{ header }}{{ column_left }}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="pull-right">
+				<button type="button" data-toggle="tooltip" title="{{ button_filter }}" onclick="$('#filter-customer').toggleClass('hidden-sm hidden-xs');" class="btn btn-default hidden-md hidden-lg">
+					<i class="fa fa-filter"></i>
+				</button>
+				<a href="{{ add }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary">
+					<i class="fa fa-plus"></i>
+				</a>
+				<button type="button" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger" onclick="confirm('{{ text_confirm_delete }}') ? $('#form-customer').submit() : false;">
+					<i class="fa fa-trash-o"></i>
+				</button>
+			</div>
+			<h1>{{ heading_title }}</h1>
+			<ul class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %}
+					<li>
+						<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="container-fluid">
+		{% if error_warning %}
+			<div class="alert alert-danger alert-dismissible">
+				<i class="fa fa-exclamation-circle"></i>
+				{{ error_warning }}
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+			</div>
+		{% endif %}
+		{% if success %}
+			<div class="alert alert-success alert-dismissible">
+				<i class="fa fa-check-circle"></i>
+				{{ success }}
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+			</div>
+		{% endif %}
+		<div class="row">
+			<div id="filter-customer" class="col-md-3 col-md-push-9 col-sm-12 hidden-sm hidden-xs">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<i class="fa fa-filter"></i>
+							{{ text_filter }}</h3>
+					</div>
+					<div class="panel-body">
+						<div class="form-group">
+							<label class="control-label" for="input-code">{{ customer_code }}</label>
+							<input type="text" name="filter_customer_code" value="{{ filter_customer_code }}" id="input-code" class="form-control"/>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="input-name">{{ entry_name }}</label>
+							<input type="text" name="filter_customer_name" value="{{ filter_customer_name }}" id="input-name" class="form-control"/>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="input-name">{{ entry_name_user }}</label>
+							<input type="text" name="filter_name" value="{{ filter_name }}" id="input-name" class="form-control"/>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="input-name">{{ entry_email }}</label>
+							<input type="text" name="filter_email" value="{{ filter_email }}" id="input-name" class="form-control"/>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="filter_username">{{ entry_username }}</label>
+							<input type="text" name="filter_username" value="{{ filter_username }}" id="filter_username" class="form-control"/>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="input-access-type">{{ entry_access_type }}</label>
+							<select name="filter_access_type" id="input-access-type" class="form-control">
+								<option value="">Select access type</option>
+								{% for access in access_type %}
+									{% if access.user_group_id == filter_access_type %}
+										<option value="{{ access.user_group_id }}" selected="selected">{{ access.name }}</option>
+									{% else %}
+										<option value="{{ access.user_group_id }}">{{ access.name }}</option>
+									{% endif %}
+								{% endfor %}
+							</select>
+						</div>
+						<div class="form-group">
+							<label class="control-label" for="input-customer-group">{{ entry_customer_group }}</label>
+							<select name="filter_customer_group_id" id="input-customer-group" class="form-control">
+								<option value="">Select customer group</option>
+								{% for customer_group in customer_groups %}
+									{% if customer_group.customer_group_id == filter_customer_group_id %}
+										<option value="{{ customer_group.customer_group_id }}" selected="selected">{{ customer_group.name }}</option>
+									{% else %}
+										<option value="{{ customer_group.customer_group_id }}">{{ customer_group.name }}</option>
+									{% endif %}
+								{% endfor %}
+							</select>
+						</div>
+						<div class="form-group text-center">
+							<button type="button" id="button-filter" class="btn btn-primary">
+								<i class="fa fa-filter"></i>
+								{{ button_filter }}</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-9 col-md-pull-3 col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<i class="fa fa-list"></i>
+							{{ heading_title }}</h3>
+					</div>
+					<div class="panel-body">
+						<div class="table-responsive">
+							<form action="{{ delete }}" method="post" enctype="multipart/form-data" id="form-customer">
+								<table style="width:100%" class="table table-bordered table-hover">
+									<thead>
+										<tr>
+											<td style="width:1%" class="text-center">
+												<input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);"/>
+											</td>
+											<td style="width:25%" class="text-left">
+												{% if sort == 'customer_code' %}
+													<a href="{{ sort_customer_code }}" class="{{ order|lower }}">{{ column_customer_code }}</a>
+												{% else %}
+													<a href="{{ sort_customer_code }}">{{ column_customer_code }}</a>
+												{% endif %}
+											</td>
+											<td style="width:25%" class="text-left">
+												{% if sort == 'customer_name' %}
+													<a href="{{ sort_customer_name }}" class="{{ order|lower }}">{{ column_name }}</a>
+												{% else %}
+													<a href="{{ sort_customer_name }}">{{ column_name }}</a>
+												{% endif %}
+											</td>
+											<td style="width:24%" class="text-left">
+												{% if sort == 'name' %}
+													<a href="{{ sort_name }}" class="{{ order|lower }}">{{ entry_name_user }}</a>
+												{% else %}
+													<a href="{{ sort_name }}">{{ entry_name_user }}</a>
+												{% endif %}
+											</td>
+											<td style="width:5%" class="text-center">{{ column_action }}</td>
+										</tr>
+									</thead>
+									<tbody>
+										{% if customers %}
+											{% for customer in customers %}
+												<tr>
+													<td class="text-center">
+														{% if customer.customer_id in selected %}
+															<input type="checkbox" name="selected[]" value="{{ customer.customer_id }}" checked="checked"/>
+														{% else %}
+															<input type="checkbox" name="selected[]" value="{{ customer.customer_id }}"/>
+														{% endif %}
+													</td>
+													<td class="text-left">{{ customer.customer_code }}</td>
+													<td class="text-left">{{ customer.customer_name }}</td>
+													<td class="text-left">{{ customer.name }}</td>
+													<td class="text-center">
+														<div>
+															<a href="{{ customer.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary">
+																<i class="fa fa-pencil"></i>
+															</a>
+															<ul class="dropdown-menu dropdown-menu-right">
+																<li class="dropdown-header">{{ text_option }}</li>
+																{% if customer.unlock %}
+																	<li>
+																		<a href="{{ customer.unlock }}">
+																			<i class="fa fa-unlock"></i>
+																			{{ text_unlock }}</a>
+																	</li>
+																{% else %}
+																	<li class="disabled">
+																		<a>
+																			<i class="fa fa-unlock"></i>
+																			{{ text_unlock }}</a>
+																	</li>
+																{% endif %}
+																<li role="separator" class="divider"></li>
+																<li class="dropdown-header">{{ text_login }}</li>
+																{% for store in customer.store %}
+																	<li>
+																		<a href="{{ store.href }}" target="_blank">
+																			<i class="fa fa-lock"></i>
+																			{{ store.name }}</a>
+																	</li>
+																{% endfor %}
+															</ul>
+														</div>
+													</td>
+												</tr>
+											{% endfor %}
+										{% else %}
+											<tr>
+												<td class="text-center" colspan="8">{{ text_no_results }}</td>
+											</tr>
+										{% endif %}
+									</tbody>
+								</table>
+							</div>
+						</form>
+						<div class="row">
+							<div class="col-sm-6 text-left">{{ pagination }}</div>
+							<div class="col-sm-6 text-right">{{ results }}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script
+		type="text/javascript">
+		<!--
+		$('.table-responsive').on('shown.bs.dropdown', function (e) {
+var t = $(this),
+m = $(e.target).find('.dropdown-menu'),
+tb = t.offset().top + t.height(),
+mb = m.offset().top + m.outerHeight(true),
+d = 20;
+if (t[0].scrollWidth > t.innerWidth()) {
+if (mb + d > tb) {
+t.css('padding-bottom', ((mb + d) - tb));
+}
+} else {
+t.css('overflow', 'visible');
+}
+}).on('hidden.bs.dropdown', function () {
+$(this).css({'padding-bottom': '', 'overflow': ''});
+});
+//
+		-->
+	</script>
+<script type="text/javascript">
+	$('#button-filter').on('click', function () {
+		url = 'index.php?route=customer/user_list&user_token={{ user_token }}';
+		var filter_customer_code = $('input[name=\'filter_customer_code\']').val();
+		var filter_customer_name = $('input[name=\'filter_customer_name\']').val();
+		var filter_name = $('input[name=\'filter_name\']').val();
+		var filter_email = $('input[name=\'filter_email\']').val();
+		var filter_username = $('input[name=\'filter_username\']').val();
+		var filter_access_type = $('#input-access-type').val();
+		var filter_customer_group_id = $('#input-customer-group').val();
+
+		if (filter_customer_code) {
+			url += '&filter_customer_code=' + encodeURIComponent(filter_customer_code);
+		}
+		if (filter_customer_name) {
+			url += '&filter_customer_name=' + encodeURIComponent(filter_customer_name);
+		}
+		if (filter_name) {
+			url += '&filter_name=' + encodeURIComponent(filter_name);
+		}
+		if (filter_email) {
+			url += '&filter_email=' + encodeURIComponent(filter_email);
+		}
+		if (filter_username) {
+			url += '&filter_username=' + encodeURIComponent(filter_username);
+		}
+		if (filter_access_type) {
+			url += '&filter_access_type=' + filter_access_type;
+		}
+		if (filter_customer_group_id) {
+			url += '&filter_customer_group_id=' + filter_customer_group_id;
+		}
+
+		location = url;
+	});
+</script>
+<script type="text/javascript">
+	$('input[name=\'filter_customer_name\']').autocomplete({
+		'source': function (request, response) {
+			$.ajax({
+				url: 'index.php?route=customer/customer/autocomplete&user_token=  {{ user_token }}&filter_name=' + encodeURIComponent(request),
+				dataType: 'json',
+				success: function (json) {
+					response($.map(json, function (item) {
+						return {label: item['name'], value: item['customer_id']}
+					}));
+				}
+			});
+		},
+		'select': function (item) {
+			$('input[name=\'filter_customer_name\']').val(item['label']);
+		}
+	});
+</script>
+
+<link rel="stylesheet" href="{{ base_url }}view/stylesheet/select2.min.css">
+<script src="{{ base_url }}view/javascript/jquery/select2.min.js"></script>
+
+<script>
+	$(document).ready(function () {
+		$('#input-customer-group').select2();
+	});
+</script>
+</div>
+{{ footer }}

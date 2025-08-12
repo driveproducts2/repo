@@ -1,0 +1,557 @@
+{{ header }}
+<div id="account-register" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  {% if error_warning %}
+  <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
+  {% endif %}
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }} common_white">{{ content_top }}
+
+      <h1 class="regt_head">{{ heading_title }}</h1>
+
+      <p class="alrdy_accnt">{{ text_account_already }}</p>
+      <form action="{{ action }}" method="post" enctype="multipart/form-data" class="form-horizontal" id="regt_form">
+        <fieldset id="account" class="regt_div">
+          <h2 class="login_heading">{{ text_your_details }}</h2>
+          <hr>
+          <div class="row form-container">
+            <div class="col-sm-3">
+              <label for="title" class="title_label">{{ entry_title }}</label>
+              
+              <select class="form-control form-dd" name="title" id="title">
+                <option value="">-</option>
+                <option {{ form_data.title is defined and form_data.title == 'Dr.' ? 'selected' : '' }} value="Dr.">Dr.</option>
+                {% if language_code == 'en' %}
+                <option {{ form_data.title is defined and form_data.title == 'Mr.' ? 'selected' : '' }} value="Mr.">Mr.</option>
+                <option {{ form_data.title is defined and form_data.title == 'Mrs.' ? 'selected' : '' }} value="Mrs.">Mrs.</option>
+                <option {{ form_data.title is defined and form_data.title == 'Ms.' ? 'selected' : '' }} value="Ms.">Ms.</option>
+                {% elseif language_code == 'fr' %}
+                <option {{ form_data.title is defined and form_data.title == 'M.' ? 'selected' : '' }} value="M.">M.</option>
+                <option {{ form_data.title is defined and form_data.title == 'Mme.' ? 'selected' : '' }} value="Mme.">Mme.</option>
+                {% endif %}
+              </select>
+            </div>
+            <div class="col-sm-3">
+              <label for="language" class="title_label">{{ entry_language }}</label>
+              <select class="form-control form-dd" name="language" id="language">
+                {% for language in languages %}
+                  <option {{ form_data.language is defined and form_data.language == language.language_id ? 'selected' : '' }} value="{{ language.language_id }}">{{ language.display_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="row form-container">
+            <div class="col-sm-6">
+              <label for="firstname" class="title_label">{{ entry_fname }}</label> <span class="clr-rd">*</span>
+              <input type="text" class="form-control form-dd {{ form_err.firstname is defined ? 'glow-red' : '' }}" name="firstname" id="firstname" value="{{ form_data.firstname is defined ? form_data.firstname : '' }}">
+              <p class="err_cls" id="err_fname">{{ form_err.firstname is defined ? form_err.firstname : '' }}</p>
+            </div>
+            <div class="col-sm-6">
+              <label for="lastname" class="title_label">{{ entry_lname }}</label> <span class="clr-rd">*</span>
+              <input type="text" class="form-control form-dd {{ form_err.lastname is defined ? 'glow-red' : '' }}" name="lastname" id="lastname" value="{{ form_data.lastname is defined ? form_data.lastname : '' }}">
+              <p class="err_cls" id="err_lname">{{ form_err.lastname is defined ? form_err.lastname : '' }}</p>
+            </div>
+          </div>
+
+          <div class="row form-container">
+            <div class="col-sm-6">
+              <label for="company" class="title_label">{{ entry_comp }}</label> <span class="clr-rd">*</span>
+              <input type="text" class="form-control form-dd {{ form_err.company is defined ? 'glow-red' : '' }}" name="company" id="company" value="{{ form_data.company is defined ? form_data.company : '' }}">
+              <p class="err_cls" id="err_cmp">{{ form_err.company is defined ? form_err.company : '' }}</p>
+            </div>
+          </div>
+
+          <div class="row form-container">
+            <div class="col-sm-6">
+              <label for="email" class="title_label">{{ entry_email }}</label> <span class="clr-rd">*</span>
+              <input type="text" class="form-control form-dd {{ form_err.email is defined or form_err.email_alrd ? 'glow-red' : '' }}" name="email" id="email" value="{{ form_data.email is defined ? form_data.email : '' }}">
+              <p class="err_cls" id="err_email">{{ form_err.email is defined ? form_err.email : '' }} {{ form_err.email_alrd is defined ? form_err.email_alrd : '' }}</p>
+            </div>
+            <div class="col-sm-6">
+              <label for="cemail" class="title_label">{{ entry_cemail }}</label> <span class="clr-rd">*</span>
+              <input type="text" class="form-control form-dd {{ form_err.cemail is defined ? 'glow-red' : '' }}" name="cemail" id="cemail" value="{{ form_data.cemail is defined ? form_data.cemail : '' }}">
+              <p class="err_cls" id="err_cfm_email">{{ form_err.cemail is defined ? form_err.cemail : '' }}</p>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset id="" class="regt_div">
+          <h2 class="login_heading">{{ entry_myaddress }}</h2>
+          <hr>
+          <div class="row form-container">
+            <div class="col-sm-6">
+              <label for="address" class="title_label">{{ entry_address }}</label> <span class="clr-rd">*</span>
+              <input type="text" class="form-control form-dd {{ form_err.address is defined ? 'glow-red' : '' }}" name="address" id="address" value="{{ form_data.address is defined ? form_data.address : '' }}">
+              <p class="err_cls" id="err_add">{{ form_err.address is defined ? form_err.address : '' }}</p>
+            </div>
+            <div class="col-sm-6">
+              <label for="city" class="title_label">{{ entry_city }}</label> <span class="clr-rd">*</span>
+              <input type="text" class="form-control form-dd {{ form_err.city is defined ? 'glow-red' : '' }}" name="city" id="city" value="{{ form_data.city is defined ? form_data.city : '' }}">
+              <p class="err_cls" id="err_city">{{ form_err.city is defined ? form_err.city : '' }}</p>
+            </div>
+          </div>
+          <div class="row form-container">
+            <div class="col-sm-6">
+              <input type="text" class="form-control form-dd" name="address2" id="address2" value="{{ form_data.address2 is defined ? form_data.address2 : '' }}">
+            </div>
+          </div>
+          <div class="row form-container">
+            <div class="col-sm-6">
+              <label for="country" class="title_label">{{ entry_county }}</label>
+              <select class="form-control form-dd" name="country" id="country">
+                <option value="">{{ entry_chse_country }}</option>
+                {% for country in countries %}
+                  <option {{ form_data.country is defined and form_data.country == country.country_id ? 'selected' : '' }} value="{{ country.country_id }}" {% if country.country_id == 39 and form_data.country is not defined %}selected{% endif %}>{{ country.name }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-sm-6 state_div">
+              <label for="state" class="title_label">{{ entry_state }}</label>
+              <select class="form-control form-dd" name="state" id="state">
+                <!-- <option value="">{{ entry_chse_reg }}</option> -->
+              </select>
+              <input type="hidden" id="state_seltd" value="{{ form_data.state is defined ? form_data.state : '' }}">
+            </div>
+          </div>
+
+          <div class="row form-container">
+            <div class="col-sm-6">
+              <label for="zip" class="title_label">{{ entry_zip }}</label> <span class="clr-rd">*</span>
+              <input type="text" class="form-control form-dd {{ form_err.zip is defined ? 'glow-red' : '' }}" name="zip" id="zip" value="{{ form_data.zip is defined ? form_data.zip : '' }}">
+              <p class="err_cls" id="err_zip">{{ form_err.zip is defined ? form_err.zip : '' }}</p>
+            </div>
+          </div>
+
+          <div class="row form-container">
+            <div class="col-sm-5">
+              <label for="phone" class="title_label">{{ entry_phone }}</label> <span class="clr-rd">*</span>
+              <input type="text" class="form-control form-dd {{ form_err.phone is defined ? 'glow-red' : '' }}" name="phone" id="phone" value="{{ form_data.phone is defined ? form_data.phone : '' }}">
+              <p class="err_cls" id="err_phn">{{ form_err.phone is defined ? form_err.phone : '' }}</p>
+            </div>
+            <div class="col-sm-1">
+              <label for="ext" class="title_label">{{ entry_ext }}</label>
+              <input type="text" class="form-control form-dd" name="ext" id="ext" value="{{ form_data.ext is defined ? form_data.ext : '' }}">
+            </div>
+            <div class="col-sm-6">
+              <label for="fax" class="title_label">{{ entry_fax }}</label>
+              <input type="text" class="form-control form-dd" name="fax" id="fax" value="{{ form_data.fax is defined ? form_data.fax : '' }}">
+            </div>
+          </div>
+
+          <div class="row form-container">
+            <div class="col-sm-3">
+              <div class="captcha-container">
+                <img id="captchaImage" src="" alt="CAPTCHA Image">
+                <input type="hidden" name="hid_cap" id="hid_cap"><br>
+                <span id="reloadCaptcha" class="generate-link">{{entry_new_image}}</span>
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <label for="code" class="title_label">{{ entry_image }} <span class="clr-rd">*</span></label> 
+              <input type="text" class="form-control form-dd {{ form_err.code_err is defined ? 'glow-red' : '' }}" name="code" id="code">
+              <p class="err_cls" id="err_code">{{ form_err.code_err is defined ? form_err.code_err : '' }}</p>
+            </div>
+          </div>
+
+        </fieldset>
+
+
+        <div class="buttons">
+          <div class="pull-right">
+            <input type="hidden" name="customer_group_id" value="1">
+            <input type="submit" value="{{ heading_title }}" class="btn btn-primary reg_btn" id="reg_btn_id" />
+          </div>
+        </div>
+      </form>
+      {{ content_bottom }}
+    </div>
+    {{ column_right }}
+  </div>
+</div>
+
+<!-- GET STATE BASED ON SELECTED COUNTRY -->
+<script>
+  //onload fetch default country state i.e canada
+  var sel_country_id = $('#country').val();
+  get_state(sel_country_id);
+  generate_image();
+
+  //onchange dropdown event to fetch state country wise
+  $('#country').on('change', function () {
+    $('#state').prop('disabled', true);
+    var country_id = $('#country').val();
+    get_state(country_id);
+  });
+
+  //main function js function to fetch states names according to country
+  function get_state(country_id) {
+    var empt_opt = "{{ entry_chse_reg }}"; //translation in french and english
+    var state_seltd = $('#state_seltd').val();
+    $('#state').prop('disabled', false); //enable state dropdown
+
+    $.ajax({
+      url: 'index.php?route=account/register/get_states',
+      type: 'post',
+      dataType: 'json',
+      data: { country_id: country_id },
+      cache: false,
+      success: function (data) {
+        
+        var $state_div = $('.state_div');
+        var $select = $('#state');
+
+        if (!data.error) { //if state found for a country then show dropdown else show textbox
+          $('input[name="state"]').remove();
+          if ($state_div.find('select').length > 0) {
+            $('#state').empty();
+            var $sel_dd = $select;
+          } else {
+            var $create_select = $('<select>', {
+              class: 'form-control form-dd',
+              name: 'state',
+              id: 'state'
+            });
+            $state_div.append($create_select);
+            var $sel_dd = $create_select;
+          }
+
+          var $opt = $('<option>', {
+            value: '',
+            text: empt_opt
+          });
+
+          $sel_dd.append($opt);
+
+          $.each(data, function (index, state) { //append all state name to dropdown
+            var $option = $('<option>', {
+              value: state.id,
+              text: state.region_en
+            });
+
+            if (state.id === state_seltd) {
+              $option.attr('selected', 'selected');
+            }
+
+            $sel_dd.append($option);
+          });
+        } else { //show textbox
+          
+          // Remove the select element
+          $select.remove();
+
+          // Create the input textbox with the same name and id
+          console.log(state_seltd);
+          state_seltd = (typeof state_seltd === 'string' && isNaN(state_seltd)) ? state_seltd : '';
+          console.log(state_seltd);
+          var $input = $('<input>', {
+            type: 'text',
+            name: 'state',
+            id: 'state',
+            class: 'form-control form-dd',
+            value: state_seltd
+          });
+
+          // Append the input textbox to the same parent container
+          $state_div.append($input);
+        }
+      }
+    });
+    return;
+  }
+
+  $('#reloadCaptcha').click(function () {
+    generate_image();
+  });
+
+  // Load default CAPTCHA image on page load
+  function generate_image() {
+    $.ajax({
+      url: 'index.php?route=account/register/gen_rand_str',
+      method: 'POST', // Use GET to fetch default image on page load
+      data: { action_img: 'generate' },
+      success: function (data) {
+        //console.log(data); return;
+        $('#hid_cap').val(data);
+        var url = 'index.php?route=account/register/get_captcha_image&rand_str=' + data;
+        $('#captchaImage').attr('src', url);
+      },
+      error: function () {
+        alert('Failed to load default CAPTCHA. Please try again.');
+      }
+    });
+  }
+
+  $(document).ready(function() {
+
+    $('#reg_btn_id').on('click', function(event) {
+      event.preventDefault();
+      var err_flg = 0;
+      var alphaPattern = /^[a-zA-Z]+$/;
+      var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      var phonePattern = /^\+?[1-9]\d{1,14}$/;
+      empty_err();
+      var fname = $('#firstname').val().trim();
+      var lname = $('#lastname').val().trim();
+      var comp = $('#company').val().trim();
+      var email = $('#email').val().trim();
+      var cnf_email = $('#cemail').val().trim();
+      var address = $('#address').val().trim();
+      var city = $('#city').val().trim();
+      var zip = $('#zip').val().trim();
+      var phone = $('#phone').val().trim();
+      var code = $('#code').val().trim();
+
+      if(fname === '') {
+        $('#err_fname').text('This is required field');
+        $('#firstname').addClass('glow-red');
+        err_flg = 1;
+      } else if (!alphaPattern.test(fname)) {
+        $('#err_fname').text('Please enter valid first name');
+        $('#firstname').addClass('glow-red');
+        err_flg = 1;
+      }
+
+      if(lname === '') {
+        $('#err_lname').text('This is required field');
+        $('#lastname').addClass('glow-red');
+        err_flg = 1;
+      } else if (!alphaPattern.test(lname)) {
+        $('#err_lname').text('Please enter valid last name');
+        $('#lastname').addClass('glow-red');
+        err_flg = 1;
+      }
+
+      if(comp === '') {
+        $('#err_cmp').text('This is required field');
+        $('#company').addClass('glow-red');
+        err_flg = 1;
+      }
+
+      if(email === '') {
+        $('#err_email').text('This is required field');
+        $('#email').addClass('glow-red');
+        err_flg = 1;
+      } else if (!emailPattern.test(email)) {
+        $('#err_email').text('Please enter valid email');
+        $('#email').addClass('glow-red');
+        err_flg = 1;
+      }
+
+      if(cnf_email === '') {
+        $('#err_cfm_email').text('This is required field');
+        $('#cemail').addClass('glow-red');
+        err_flg = 1;
+      } else if(email !== cnf_email) {
+        $('#err_cfm_email').text('Confirm email doesn\'t match');
+        $('#cemail').addClass('glow-red');
+        err_flg = 1;
+      }
+
+      if(address === '') {
+        $('#err_add').text('This is required field');
+        $('#address').addClass('glow-red');
+        err_flg = 1;
+      }
+
+      if(city === '') {
+        $('#err_city').text('This is required field');
+        $('#city').addClass('glow-red');
+        err_flg = 1;
+      }
+
+      if(zip === '') {
+        $('#err_zip').text('This is required field');
+        $('#zip').addClass('glow-red');
+        err_flg = 1;
+      }
+
+      if(phone === '') {
+        $('#err_phn').text('This is required field');
+        $('#phone').addClass('glow-red');
+        err_flg = 1;
+      } else if(!phonePattern.test(phone)) {
+        $('#err_phn').text('Please enter valid phone');
+        $('#phone').addClass('glow-red');
+      }
+
+      if(code === '') {
+        $('#err_code').text('This is required field');
+        $('#code').addClass('glow-red');
+        err_flg = 1;
+      } else if (!alphaPattern.test(code)) {
+        $('#err_code').text('Please enter valid code');
+        $('#code').addClass('glow-red');
+        err_flg = 1;
+      }
+
+      if(err_flg == 0) {
+        $('#regt_form').submit();
+      }
+
+    });
+
+
+
+    function empty_err() {
+      $('#err_fname').text('');
+      $('#err_lname').text('');
+      $('#err_cmp').text('');
+      $('#err_email').text('');
+      $('#err_cfm_email').text('');
+      $('#err_add').text('');
+      $('#err_city').text('');
+      $('#err_zip').text('');
+      $('#err_phn').text('');
+      $('#err_code').text('');
+
+      $('#firstname').removeClass('glow-red');
+      $('#lastname').removeClass('glow-red');
+      $('#company').removeClass('glow-red');
+      $('#email').removeClass('glow-red');
+      $('#cemail').removeClass('glow-red');
+      $('#address').removeClass('glow-red');
+      $('#city').removeClass('glow-red');
+      $('#zip').removeClass('glow-red');
+      $('#phone').removeClass('glow-red');
+      $('#code').removeClass('glow-red');
+    }
+
+  });
+
+  
+
+</script>
+
+<!-- <script type="text/javascript">< !-
+    // Sort the custom fields
+    $('#account .form-group[data-sort]').detach().each(function () {
+      if ($(this).attr('data-sort') >= 0 && $(this).attr('data-sort') <= $('#account .form-group').length) {
+        $('#account .form-group').eq($(this).attr('data-sort')).before(this);
+      }
+
+      if ($(this).attr('data-sort') > $('#account .form-group').length) {
+        $('#account .form-group:last').after(this);
+      }
+
+      if ($(this).attr('data-sort') == $('#account .form-group').length) {
+        $('#account .form-group:last').after(this);
+      }
+
+      if ($(this).attr('data-sort') < -$('#account .form-group').length) {
+        $('#account .form-group:first').before(this);
+      }
+    });
+
+  $('input[name=\'customer_group_id\']').on('change', function () {
+    $.ajax({
+      url: 'index.php?route=account/register/customfield&customer_group_id=' + this.value,
+      dataType: 'json',
+      success: function (json) {
+        $('.custom-field').hide();
+        $('.custom-field').removeClass('required');
+
+        for (i = 0; i < json.length; i++) {
+          custom_field = json[i];
+
+          $('#custom-field' + custom_field['custom_field_id']).show();
+
+          if (custom_field['required']) {
+            $('#custom-field' + custom_field['custom_field_id']).addClass('required');
+          }
+        }
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      }
+    });
+  });
+
+  $('input[name=\'customer_group_id\']:checked').trigger('change');
+  //</script>-->
+  <!--<script type="text/javascript">
+    $('button[id^=\'button-custom-field\']').on('click', function () {
+      var element = this;
+
+      $('#form-upload').remove();
+
+      $('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
+
+      $('#form-upload input[name=\'file\']').trigger('click');
+
+      if (typeof timer != 'undefined') {
+        clearInterval(timer);
+      }
+
+      timer = setInterval(function () {
+        if ($('#form-upload input[name=\'file\']').val() != '') {
+          clearInterval(timer);
+
+          $.ajax({
+            url: 'index.php?route=tool/upload',
+            type: 'post',
+            dataType: 'json',
+            data: new FormData($('#form-upload')[0]),
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+              $(element).button('loading');
+            },
+            complete: function () {
+              $(element).button('reset');
+            },
+            success: function (json) {
+              $(element).parent().find('.text-danger').remove();
+
+              if (json['error']) {
+                $(node).parent().find('input').after('<div class="text-danger">' + json['error'] + '</div>');
+              }
+
+              if (json['success']) {
+                alert(json['success']);
+
+                $(element).parent().find('input').val(json['code']);
+              }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+              alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+            }
+          });
+        }
+      }, 500);
+    });
+  //</script>-->
+<!--<script type="text/javascript">< !-
+    $('.date').datetimepicker({
+      language: '{{ datepicker }}',
+      pickTime: false
+    });
+
+  $('.time').datetimepicker({
+    language: '{{ datepicker }}',
+    pickDate: false
+  });
+
+  $('.datetime').datetimepicker({
+    language: '{{ datepicker }}',
+    pickDate: true,
+    pickTime: true
+  });
+  //
+
+</script> -->
+
+{{ footer }}

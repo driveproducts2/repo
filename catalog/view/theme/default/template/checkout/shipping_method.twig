@@ -1,0 +1,61 @@
+<div class="alert alert-warning alert-dismissible" id="error_div">
+  {# <i class="fa fa-exclamation-circle"></i> {{ error_warning }} #}
+</div>
+<div class="calculateShippingDiv">
+  <p class="shippingMsg">Please click on the following button to calculate your shipping charges.</p>
+  <button class="calShippingBtn">Calculate shipping charges</button>
+</div>
+<div class="contactShippingDiv">
+  <h5>See Shipping note</h5>
+  <label><input type="radio" value="1" id="collapse-shipping-method" name="collapse-shipping-method"> Contact us for shipping cost</label>
+</div>
+<div class="buttons">
+  <div class="pull-right">
+    <input type="button" value="{{ button_continue }}" id="button-shipping-method" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
+  </div>
+</div>
+<div class="loader-container">
+  <div class="loader"></div>
+</div>
+
+<script>
+  $('#error_div').hide();
+  $('.calShippingBtn').on('click', function() {
+    $('#error_div').hide();
+    $.ajax({
+      url: 'index.php?route=checkout/shipping_method/calculate_tax',
+      type: 'post',
+      dataType: 'json',
+      data: new FormData($('#form-upload')[0]),
+      cache: false,
+      contentType: false,
+      processData: false,
+      beforeSend: function() {
+        $('.calculateShippingDiv').hide();
+        $('.loader').show();
+      },
+      complete: function() {
+        $('.loader').hide();
+      },
+      success: function(json) {
+        if ('error' in json) {
+          if(json.error == true) {
+            $('#error_div').show();
+            $('#error_div').html('<i class="fa fa-exclamation-circle"></i> '+json.msg);
+            $('.calculateShippingDiv').show();
+          } else if(json.error == false) {
+            $('#error_div').hide();
+            $('.contactShippingDiv').show();
+          }
+        } else {
+          $('#error_div').show();
+          $('#error_div').html('<i class="fa fa-exclamation-circle"></i> Problem in result format');
+        }
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      }
+    });
+    //console.log(shipping_details);
+  });
+</script>

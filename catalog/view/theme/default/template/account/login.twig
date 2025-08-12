@@ -1,0 +1,113 @@
+{{ header }}
+<div id="account-login" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  {% if success %}
+  <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}</div>
+  {% endif %}
+  {% if error_warning %}
+  <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
+  {% endif %}
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+      <!-- <div class="row"> -->
+      <div class="row equal-height">
+        <div class="col-sm-6">
+          <div class="login_div">
+            <h2 class="login_heading">{{ text_returning_customer }} ?</h2>
+            <form action="{{ action }}" method="post" enctype="multipart/form-data" id="login_form" autocomplete="off">
+              <div class="form-group">
+                <label class="control-label login_font" for="email">{{ entry_email }}</label>
+                <input type="text" name="email" value="{{ email }}" placeholder="{{ entry_email }}" id="email"
+                  class="form-control login_input" />
+              </div>
+              <div class="form-group">
+                <label class="control-label login_font" for="password">{{ entry_password }}</label>
+                <input type="password" name="password" value="{{ password }}" placeholder="{{ entry_password }}"
+                  id="password" class="form-control login_input" />
+              </div>
+              <input type="checkbox" name="rem_email" id="rem_email" value="1" {% if email_checked %}checked{% endif %} > <label for="rem_email" class="login_font">{{
+                text_rem_mail }}</label><br>
+              <input type="checkbox" name="stay_log" id="stay_log" value="1" {% if logged_in_checked %}checked{% endif %}> <label for="stay_log" class="login_font">{{
+                text_sty_log }}</label>
+              <div class="form-group log_btn_div">
+                <button id="login_submit" type="submit" class="btn btn-primary login_btn">{{ button_login }} <i
+                    class="fa fa-lock fa-inverted fa-small" aria-hidden="true"></i></button>
+              </div>
+
+
+              {% if redirect %}
+              <input type="hidden" name="redirect" value="{{ redirect }}" />
+              {% endif %}
+            </form>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="login_div">
+            <h2 class="login_heading">{{ text_new_customer }}</h2>
+            <!-- <p><strong>{{ text_register }}</strong></p> -->
+            <p class="login_font">{{ text_register_account }}</p>
+            <div class="reg_btn_div">
+              <a href="{{ register }}" class="btn btn-primary login_btn">{{ text_register_btn }}</a>
+            </div>
+          </div>
+          <div class="login_div">
+            <h2 class="login_heading">{{ text_forgotten }}</h2>
+            <!-- <p><strong>{{ text_register }}</strong></p> -->
+            <label for="input-email-fgt-pwd" class="login_font">{{ text_forgotten_text }}</label>
+            <div class="form-group fgt_pwd_div">
+              <input type="text" name="email" value="{{ email }}" placeholder="{{ entry_email }}"
+                id="input-email-fgt-pwd" class="form-control login_input fgt_pwd_input" />
+              <button type="submit" class="btn btn-primary login_btn fgt_pwd_btn">{{ text_fgt_pwc }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- </div> -->
+      {{ content_bottom }}
+    </div>
+    {{ column_right }}
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $("#login_form").validate({
+      rules: {
+        email: {
+          required: true,
+          email: true
+        },
+        password: {
+          required: true
+        }
+      },
+      messages: {
+        email: {
+          required: "Please enter your email address",
+          email: "Please enter a valid email address"
+        },
+        password: {
+          required: "Please enter your password"
+        }
+      },
+      submitHandler: function (form) {
+        // Perform an additional check before allowing form submission if needed
+        // For example, you could show a loading spinner or disable the submit button
+
+        form.submit(); // Submit the form using the default browser behavior
+      }
+    });
+  });
+</script>
+
+{{ footer }}
